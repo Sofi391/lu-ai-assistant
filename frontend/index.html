@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LU: Intelligence Reimagined</title>
+    <meta name="description" content="Modern RAG-powered chatbot solutions for your business.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">LU AI</div>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="admin.html">Dashboard</a></li>
+            <li><button class="btn-primary">Get Started</button></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="gradient-text">Your Data, <br>Instant Answers.</h1>
+                <p>LU is a next-generation RAG chatbot that understands your documents as well as you do. Upload, ask, and unlock insights in seconds.</p>
+                <div class="cta-group">
+                    <button class="btn-large">Try LU Now</button>
+                    <button class="btn-secondary">View Demo</button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="blob"></div>
+                <div class="glass-card">
+                    <div class="line"></div>
+                    <div class="line short"></div>
+                    <div class="line"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="feature-card">
+                <div class="icon">🔍</div>
+                <h3>Deep Retrieval</h3>
+                <p>Uses pgvector and cosine similarity to find the needle in the haystack.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">⚡</div>
+                <h3>Fast Processing</h3>
+                <p>Powered by Gemini 1.5 Flash for lightning-quick responses.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🔒</div>
+                <h3>Private & Secure</h3>
+                <p>Your documents stay within your secure database infrastructure.</p>
+            </div>
+        </section>
+    </main>
+
+    <div id="chat-widget" class="chat-widget">
+        <div id="chat-header" class="chat-header">
+            <div class="bot-info">
+                <div class="status-dot"></div>
+                <span>LU is online</span>
+            </div>
+            <button id="close-chat">&times;</button>
+        </div>
+        <div id="chat-messages" class="chat-messages"></div>
+        <div class="chat-input-area">
+            <input type="text" id="user-input" placeholder="Ask LU something...">
+            <button id="send-btn">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9L22 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <button id="chat-toggle" class="chat-toggle">
+        <span class="icon-open">💬</span>
+    </button>
+
+    <script src="js/chat.js"></script>
+</body>
+</html>

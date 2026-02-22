@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | LU AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .auth-container { min-height: 100vh; display: flex; justify-content: center; align-items: center; background-color: var(--dark); }
+        .auth-card { background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(20px); padding: 3rem; border-radius: 24px; width: 100%; max-width: 450px; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; color: var(--gray); font-size: 0.9rem; }
+        input { width: 100%; padding: 1rem; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 12px; color: white; font-family: inherit; }
+        .toggle-auth { margin-top: 1.5rem; text-align: center; color: var(--gray); font-size: 0.9rem; cursor: pointer; }
+        .toggle-auth span { color: var(--primary-light); font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <h2 id="auth-title" class="gradient-text" style="font-size: 2rem; margin-bottom: 2rem;">Welcome Back</h2>
+            <form id="auth-form">
+                <div class="form-group" id="name-group" style="display: none;"><label>Full Name</label><input type="text" id="full_name" placeholder="John Doe"></div>
+                <div class="form-group"><label>Email Address</label><input type="email" id="email" required placeholder="name@company.com"></div>
+                <div class="form-group"><label>Password</label><input type="password" id="password" required placeholder="••••••••"></div>
+                <button type="submit" class="btn-large" style="width: 100%; margin-top: 1rem;" id="submit-btn">Login</button>
+            </form>
+            <div class="toggle-auth" id="toggle-auth">Don't have an account? <span id="toggle-text">Sign Up</span></div>
+            <div id="auth-status" style="margin-top: 1rem; text-align: center; font-size: 0.9rem;"></div>
+        </div>
+    </div>
+    <script src="js/auth.js"></script>
+</body>
+</html>
