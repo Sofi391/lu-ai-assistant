@@ -41,9 +41,13 @@ class ChatView(APIView):
                 title=title
             )
 
+        MEMORY_WINDOW = 10
         Message.objects.create(session=session, role="user", content=question)
+        context = Message.objects.filter(session=session).order_by('-created_at')[:MEMORY_WINDOW]
+        context = reversed(context)
+        context_messages = "\n".join([f"{msg.role}:{msg.content}" for msg in context])
         rag = RAGService()
-        answer = rag.get_response(question)
+        answer = rag.get_response(context_messages)
 
         Message.objects.create(session=session, role="assistant", content=answer)
 
