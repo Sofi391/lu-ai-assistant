@@ -1,17 +1,9 @@
 import os
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import google.generativeai as genai
-from .models import KnowledgeBase
+from ..models import KnowledgeBase
 from pgvector.django import L2Distance
-from pathlib import Path
-
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-def load_prompt(file_path: str) -> str:
-    path = BASE_DIR / "chat" / "prompts" / file_path
-    return path.read_text(encoding='utf-8')
+from .llm_service import LLMService
 
 
 FOLLOW_UP_PHRASES = {
@@ -33,7 +25,8 @@ FOLLOW_UP_PHRASES = {
     "is it",
     "is that",
     "can you",
-    "please"
+    "please",
+    "will"
 }
 
 
@@ -56,13 +49,12 @@ genai.configure(api_key=GEMINI_API_KEY)
 class RAGService:
     def __init__(self):
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=600,        # slightly smaller for better precision
+            chunk_size=600,
             chunk_overlap=60,
             length_function=len
         )
         self.embedding_model = "models/gemini-embedding-001"
-        self.llm_model = genai.GenerativeModel("gemini-2.5-flash-lite")
-
+        self.llm_service = LLMService()
 
     def ingest_text(self, text: str, metadata: dict = None):
         chunks = self.text_splitter.split_text(text)
@@ -86,14 +78,12 @@ class RAGService:
 
         KnowledgeBase.objects.bulk_create(knowledge_objects)
 
-
     def retrieve_context(self, embedding, top_k=3):
         docs = KnowledgeBase.objects.order_by(
             L2Distance("embedding", embedding)
         )[:top_k]
 
         return [doc.content for doc in docs]
-
 
     def get_response(self, question: str, history: str) -> str:
 
@@ -120,30 +110,46 @@ class RAGService:
 
             context = self.retrieve_context(enhanced_embedding)
 
-
         if not context:
             return "I currently do not have sufficient information to answer that."
 
-
         context_str = "\n\n".join(context)
 
-        system_prompt = load_prompt("system_prompt.txt")
-        rag_prompt = load_prompt("rag_prompt.txt")
+        return self.llm_service.generate_response(question, history, context_str)
 
-        final_prompt = rag_prompt.format(
-            system_prompt=system_prompt,
-            history=history,
-            context=context_str,
-            question=question
-        )
-
-
-        response = self.llm_model.generate_content(
-            final_prompt,
-            generation_config=genai.GenerationConfig(
-                max_output_tokens=1024,
-                temperature=0.1
+    def get_response_stream(self,question: str, history: str) -> str:
+        """Attempt to stream"""
+        try:
+            query_embedding_result = genai.embed_content(
+                model=self.embedding_model,
+                content=question,
+                task_type="RETRIEVAL_QUERY"
             )
-        )
 
-        return response.text.strip()
+            query_embedding = query_embedding_result["embedding"]
+
+            context = self.retrieve_context(query_embedding)
+
+            if not context and is_follow_up(question) and history:
+                recent_history = history.split("\n")[-4:]
+                enhanced_query = " ".join(recent_history) + " " + question
+
+                enhanced_embedding = genai.embed_content(
+                    model=self.embedding_model,
+                    content=enhanced_query,
+                    task_type="RETRIEVAL_QUERY"
+                )["embedding"]
+
+                context = self.retrieve_context(enhanced_embedding)
+
+            if not context:
+                yield "I currently do not have sufficient information to answer that."
+                return
+
+            context_str = "\n\n".join(context)
+
+            yield from self.llm_service.stream_response(question, history, context_str)
+
+        except Exception as e:
+            print(f"Error during streaming response: {e}")
+            raise e

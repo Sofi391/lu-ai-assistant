@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'chat',
 ]
 
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -59,7 +60,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True # In production, restrict this.
+# Allow your frontend domain
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+CORS_EXPOSED_HEADERS = ['X-Session-ID']
 
 ROOT_URLCONF = 'lu_backend.urls'
 
