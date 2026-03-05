@@ -15,3 +15,18 @@
 [2026-03-05 17:35:54,202] INFO django.utils.autoreload Watching for file changes with StatReloader
 [2026-03-05 17:41:39,327] INFO django.utils.autoreload C:\Users\HELLO\Documents\Git repos\Leuls_chat\ChatBot\backend\chat\services\rag_service.py changed, reloading.
 [2026-03-05 17:41:55,919] INFO django.utils.autoreload Watching for file changes with StatReloader
+[2026-03-05 17:47:40,296] INFO django.utils.autoreload C:\Users\HELLO\Documents\Git repos\Leuls_chat\ChatBot\backend\chat\services\llm_service.py changed, reloading.
+[2026-03-05 17:47:44,583] INFO django.utils.autoreload Watching for file changes with StatReloader
+[2026-03-05 17:49:27,062] INFO django.utils.autoreload C:\Users\HELLO\Documents\Git repos\Leuls_chat\ChatBot\backend\chat\services\llm_service.py changed, reloading.
+[2026-03-05 17:49:31,739] INFO django.utils.autoreload Watching for file changes with StatReloader
+[2026-03-05 17:50:05,399] INFO django.utils.autoreload C:\Users\HELLO\Documents\Git repos\Leuls_chat\ChatBot\backend\chat\services\rag_service.py changed, reloading.
+[2026-03-05 17:50:09,849] INFO django.utils.autoreload Watching for file changes with StatReloader
+[2026-03-05 17:54:56,040] INFO django.utils.autoreload C:\Users\HELLO\Documents\Git repos\Leuls_chat\ChatBot\backend\chat\services\llm_service.py changed, reloading.
+[2026-03-05 17:55:01,865] INFO django.utils.autoreload Watching for file changes with StatReloader
+[2026-03-05 17:55:21,952] INFO django.utils.autoreload C:\Users\HELLO\Documents\Git repos\Leuls_chat\ChatBot\backend\chat\services\rag_service.py changed, reloading.
+[2026-03-05 17:55:24,025] INFO django.utils.autoreload Watching for file changes with StatReloader
+[2026-03-06 00:02:56,344] INFO django.utils.autoreload Watching for file changes with StatReloader
+[2026-03-06 00:04:31,399] INFO django.server "POST /token/ HTTP/1.1" 200 489
+[2026-03-06 00:04:58,262] INFO chat Session list request - User: sofi
+[2026-03-06 00:04:58,335] INFO chat Session list retrieved - User: sofi, Count: 4, Time: 0.07s
+[2026-03-06 00:04:58,336] INFO django.server "GET /sessions/ HTTP/1.1" 200 280
