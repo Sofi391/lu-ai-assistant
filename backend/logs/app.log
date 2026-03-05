@@ -1,0 +1,17 @@
+[2026-03-05 16:59:06,338] INFO django.utils.autoreload Watching for file changes with StatReloader
+[2026-03-05 17:03:47,057] INFO django.utils.autoreload Watching for file changes with StatReloader
+[2026-03-05 17:04:05,749] INFO django.server "POST /token/ HTTP/1.1" 200 489
+[2026-03-05 17:04:30,000] INFO chat Received question: okay
+[2026-03-05 17:04:33,576] INFO django.server "POST /chat/ HTTP/1.1" 200 1152
+[2026-03-05 17:13:25,243] INFO django.utils.autoreload C:\Users\HELLO\Documents\Git repos\Leuls_chat\ChatBot\backend\lu_backend\settings\base.py changed, reloading.
+[2026-03-05 17:13:33,412] INFO django.utils.autoreload Watching for file changes with StatReloader
+[2026-03-05 17:17:01,534] INFO django.utils.autoreload C:\Users\HELLO\Documents\Git repos\Leuls_chat\ChatBot\backend\lu_backend\settings\base.py changed, reloading.
+[2026-03-05 17:17:03,881] INFO django.utils.autoreload Watching for file changes with StatReloader
+[2026-03-05 17:26:28,063] INFO django.utils.autoreload C:\Users\HELLO\Documents\Git repos\Leuls_chat\ChatBot\backend\chat\views.py changed, reloading.
+[2026-03-05 17:26:34,731] INFO django.utils.autoreload Watching for file changes with StatReloader
+[2026-03-05 17:35:16,390] INFO django.utils.autoreload C:\Users\HELLO\Documents\Git repos\Leuls_chat\ChatBot\backend\chat\views.py changed, reloading.
+[2026-03-05 17:35:19,884] INFO django.utils.autoreload Watching for file changes with StatReloader
+[2026-03-05 17:35:45,440] INFO django.utils.autoreload C:\Users\HELLO\Documents\Git repos\Leuls_chat\ChatBot\backend\chat\views.py changed, reloading.
+[2026-03-05 17:35:54,202] INFO django.utils.autoreload Watching for file changes with StatReloader
+[2026-03-05 17:41:39,327] INFO django.utils.autoreload C:\Users\HELLO\Documents\Git repos\Leuls_chat\ChatBot\backend\chat\services\rag_service.py changed, reloading.
+[2026-03-05 17:41:55,919] INFO django.utils.autoreload Watching for file changes with StatReloader
