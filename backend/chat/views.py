@@ -10,6 +10,9 @@ from .models import ChatSession, Message
 import re
 
 
+MAX_INPUT_LENGTH = 2000
+MEMORY_WINDOW = 10
+
 class SignupView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
@@ -29,26 +32,48 @@ class ChatView(APIView):
     def post(self, request):
         question = request.data.get('question','').strip()
         if not question:
-            return Response({"error": "Prompt is required"}, status=400)
+            return Response({
+                  "error": True,
+                  "code": "INVALID_INPUT",
+                  "message": "Prompt is required"
+                }, status=400)
+        if len(question) > MAX_INPUT_LENGTH:
+            return Response({
+                  "error": True,
+                  "code": "INPUT_TOO_LONG",
+                  "message": f"Input exceeds maximum length of {MAX_INPUT_LENGTH} characters"
+                }, status=400)
 
         session_id = request.data.get('session_id')  # optional
         first_sentence = re.split(r'[.!?]+', question)[0].strip()[:35]
         title = request.data.get('title',first_sentence)  # optional
-        if session_id:
-            session = get_object_or_404(ChatSession, id=session_id, user=request.user)
-        else:
-            session = ChatSession.objects.create(
-                user=request.user,
-                title=title
-            )
-
-        MEMORY_WINDOW = 10
+        try:
+            if session_id:
+                session = ChatSession.objects.get(id=session_id, user=request.user)
+            else:
+                session = ChatSession.objects.create(
+                    user=request.user,
+                    title=title
+                )
+        except ChatSession.DoesNotExist:
+            return Response({
+                "error": True,
+                "code": "SESSION_NOT_FOUND",
+                "message": "Chat session not found."
+            }, status=400)
         Message.objects.create(session=session, role="user", content=question)
         last_question = question
         context = Message.objects.filter(session=session).order_by('-created_at')[1:MEMORY_WINDOW+1]
         context = reversed(context)
         messaging_history = "\n".join([f"{msg.role.capitalize()}:{msg.content}" for msg in context])
-        rag = RAGService()
+        try:
+            rag = RAGService()
+        except Exception as e:
+            return Response({
+                "error": True,
+                "code": "RAG_SERVICE_ERROR",
+                "message": "AI service failed to initialize."
+            }, status=500)
 
         def stream_wrapper():
             full_answer = ""
@@ -69,7 +94,7 @@ class ChatView(APIView):
                         Message.objects.create(session=session, role="assistant", content=fallback_answer)
                         yield fallback_answer
                     except:
-                        yield "I'm sorry, I encountered a connection error. Please try again."
+                        yield "\n\nI'm sorry, I encountered a connection error. Please try again."
                 else:
                     print(f"Stream interrupted: {e}")
         response = StreamingHttpResponse(stream_wrapper(), content_type='text/plain')

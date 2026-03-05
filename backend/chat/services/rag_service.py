@@ -4,6 +4,9 @@ import google.generativeai as genai
 from ..models import KnowledgeBase
 from pgvector.django import L2Distance
 from .llm_service import LLMService
+from google.api_core.exceptions import DeadlineExceeded
+from django.db import OperationalError
+
 
 
 FOLLOW_UP_PHRASES = {
@@ -86,36 +89,44 @@ class RAGService:
         return [doc.content for doc in docs]
 
     def get_response(self, question: str, history: str) -> str:
-
-        query_embedding_result = genai.embed_content(
-            model=self.embedding_model,
-            content=question,
-            task_type="RETRIEVAL_QUERY"
-        )
-
-        query_embedding = query_embedding_result["embedding"]
-
-        context = self.retrieve_context(query_embedding)
-
-        if not context and is_follow_up(question) and history:
-
-            recent_history = history.split("\n")[-4:]
-            enhanced_query = " ".join(recent_history) + " " + question
-
-            enhanced_embedding = genai.embed_content(
+        try:
+            query_embedding_result = genai.embed_content(
                 model=self.embedding_model,
-                content=enhanced_query,
-                task_type="RETRIEVAL_QUERY"
-            )["embedding"]
+                content=question,
+                task_type="RETRIEVAL_QUERY",
+                request_options={"timeout": 10}
+            )
 
-            context = self.retrieve_context(enhanced_embedding)
+            query_embedding = query_embedding_result["embedding"]
+            if not query_embedding:
+                return {"error": True,"message": "Failed to generate embedding for the question."}
 
-        if not context:
-            return "I currently do not have sufficient information to answer that."
+            context = self.retrieve_context(query_embedding)
 
-        context_str = "\n\n".join(context)
+            if not context and is_follow_up(question) and history:
 
-        return self.llm_service.generate_response(question, history, context_str)
+                recent_history = history.split("\n")[-4:]
+                enhanced_query = " ".join(recent_history) + " " + question
+
+                enhanced_embedding = genai.embed_content(
+                    model=self.embedding_model,
+                    content=enhanced_query,
+                    task_type="RETRIEVAL_QUERY",
+                    reequest_options={"timeout": 10}
+                )["embedding"]
+
+                context = self.retrieve_context(enhanced_embedding)
+
+            if not context:
+                return "I currently do not have sufficient information to answer that."
+
+            context_str = "\n\n".join(context)
+
+            return self.llm_service.generate_response(question, history, context_str)
+
+        except (DeadlineExceeded, OperationalError) as e:
+            print(f"Error during RAG processing: {e}")
+            return {"error": True,"message": "Service temporarily unavailable. Please try again later."}
 
     def get_response_stream(self,question: str, history: str) -> str:
         """Attempt to stream"""
@@ -123,10 +134,14 @@ class RAGService:
             query_embedding_result = genai.embed_content(
                 model=self.embedding_model,
                 content=question,
-                task_type="RETRIEVAL_QUERY"
+                task_type="RETRIEVAL_QUERY",
+                request_options={"timeout": 10}
             )
 
             query_embedding = query_embedding_result["embedding"]
+            if not query_embedding:
+                yield "Failed to generate embedding for the question."
+                return
 
             context = self.retrieve_context(query_embedding)
 
@@ -137,7 +152,8 @@ class RAGService:
                 enhanced_embedding = genai.embed_content(
                     model=self.embedding_model,
                     content=enhanced_query,
-                    task_type="RETRIEVAL_QUERY"
+                    task_type="RETRIEVAL_QUERY",
+                    request_options={"timeout": 10}
                 )["embedding"]
 
                 context = self.retrieve_context(enhanced_embedding)
@@ -150,6 +166,7 @@ class RAGService:
 
             yield from self.llm_service.stream_response(question, history, context_str)
 
-        except Exception as e:
-            print(f"Error during streaming response: {e}")
-            raise e
+        except (DeadlineExceeded, OperationalError) as e:
+            print(f"Error during RAG streaming: {e}")
+            yield "Service temporarily unavailable. Please try again later."
+
