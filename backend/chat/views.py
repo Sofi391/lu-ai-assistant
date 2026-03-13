@@ -1,3 +1,4 @@
+from rest_framework.exceptions import Throttled
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -55,6 +56,12 @@ class SignupView(APIView):
 
 class ChatView(APIView):
     permission_classes = [IsAuthenticated]
+    throttle_scope = "chat"
+    
+    def throttled(self, request, wait):
+        logger.warning(f"Chat request throttled - User: {request.user.username}, Wait: {wait}s")
+        raise Throttled(wait)
+
     def post(self, request):
         question = request.data.get('question','').strip()
         logger.info(f"Chat request started - User: {request.user.username}, Question length: {len(question)}")
@@ -162,6 +169,12 @@ class ChatView(APIView):
 
 class IngestView(APIView):
     permission_classes = [IsAuthenticated]
+    throttle_scope = "ingest"
+    
+    def throttled(self, request, wait):
+        logger.warning(f"Ingest request throttled - User: {request.user.username}, Wait: {wait}s")
+        raise Throttled(wait)
+
     def post(self, request):
         start_time = time.time()
         content = request.data.get('content')

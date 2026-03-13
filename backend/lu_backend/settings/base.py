@@ -89,7 +89,14 @@ WSGI_APPLICATION = 'lu_backend.wsgi.application'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_THROTTLE_CLASSES': [
+            'rest_framework.throttling.ScopedRateThrottle',
+        ],
+    'DEFAULT_THROTTLE_RATES': {
+        'chat': '10/min',
+        'ingest': '5/min',
+    }
 }
 
 SIMPLE_JWT = {
