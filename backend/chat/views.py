@@ -1,7 +1,7 @@
 from rest_framework.exceptions import Throttled
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.http import StreamingHttpResponse
@@ -200,7 +200,7 @@ class ChatView(APIView):
 
 
 class IngestView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAdminUser]
     throttle_scope = "ingest"
     
     def throttled(self, request, wait):
@@ -225,7 +225,11 @@ class IngestView(APIView):
         
         if not content:
             logger.warning(f"Ingest failed: Empty content - User: {request.user.username}")
-            return Response({"error": "Content is required"}, status=400)
+            return Response({
+                "error": True,
+                "code": "INVALID_INPUT",
+                "message": "Content is required"
+            }, status=400)
         
         try:
             rag = RAGService()
@@ -236,7 +240,11 @@ class IngestView(APIView):
         except Exception as e:
             elapsed = time.time() - start_time
             logger.error(f"Ingest error: {str(e)} - User: {request.user.username}, Time: {elapsed:.2f}s")
-            return Response({"error": "Failed to ingest content"}, status=500)
+            return Response({
+                "error": True,
+                "code": "INGEST_ERROR",
+                "message": "Failed to ingest content"
+            }, status=500)
 
 
 class SessionListView(APIView):
