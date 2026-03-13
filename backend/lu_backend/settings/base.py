@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'chat',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
 ]
 
 
@@ -96,7 +98,23 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'chat': '10/min',
         'ingest': '5/min',
-    }
+    },
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Lu AI assistant',
+    'DESCRIPTION': (
+        """An intelligent conversational API built with Django REST Framework that 
+provides real-time RAG-powered chat with contextual session memory and 
+secure document ingestion. The system supports streaming AI responses, 
+persistent conversation history, and production-ready safeguards such 
+as rate limiting, structured logging, and GDPR-compliant privacy controls."""
+    ),
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SWAGGER_UI_DIST': 'SIDECAR',
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
 }
 
 SIMPLE_JWT = {

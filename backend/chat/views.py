@@ -5,9 +5,15 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.http import StreamingHttpResponse
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 from .services.rag_service import RAGService
 # from .mock_rag_api import MockResponse as RAGService
 from .models import ChatSession, Message
+from .serializers import (
+    SignupRequestSerializer, SignupResponseSerializer,
+    ChatRequestSerializer, IngestRequestSerializer, IngestResponseSerializer,
+    SessionListResponseSerializer, ErrorResponseSerializer, ThrottleErrorResponseSerializer
+)
 import re
 import logging
 import time
@@ -30,6 +36,17 @@ def mask_email(email):
 
 class SignupView(APIView):
     permission_classes = [AllowAny]
+    
+    @extend_schema(
+        summary="Register a new user account",
+        description="Creates a new user account with email, password, and optional full name.",
+        request=SignupRequestSerializer,
+        responses={
+            200: SignupResponseSerializer,
+            400: ErrorResponseSerializer,
+            500: ErrorResponseSerializer,
+        },
+    )
     def post(self, request):
         start_time = time.time()
         email = request.data.get('email')
@@ -62,6 +79,21 @@ class ChatView(APIView):
         logger.warning(f"Chat request throttled - User: {request.user.username}, Wait: {wait}s")
         raise Throttled(wait)
 
+    @extend_schema(
+        summary="Send a message to the AI assistant",
+        description="Processes a user question via RAG and returns a streaming text response with conversation context.",
+        request=ChatRequestSerializer,
+        responses={
+            200: OpenApiResponse(
+                description="Streaming text response from AI assistant",
+                response=str
+            ),
+            400: ErrorResponseSerializer,
+            404: ErrorResponseSerializer,
+            429: ThrottleErrorResponseSerializer,
+            500: ErrorResponseSerializer,
+        },
+    )
     def post(self, request):
         question = request.data.get('question','').strip()
         logger.info(f"Chat request started - User: {request.user.username}, Question length: {len(question)}")
@@ -175,6 +207,17 @@ class IngestView(APIView):
         logger.warning(f"Ingest request throttled - User: {request.user.username}, Wait: {wait}s")
         raise Throttled(wait)
 
+    @extend_schema(
+        summary="Ingest content into RAG knowledge base",
+        description="Adds text content to the RAG system's knowledge base for future query retrieval.",
+        request=IngestRequestSerializer,
+        responses={
+            200: IngestResponseSerializer,
+            400: ErrorResponseSerializer,
+            429: ThrottleErrorResponseSerializer,
+            500: ErrorResponseSerializer,
+        },
+    )
     def post(self, request):
         start_time = time.time()
         content = request.data.get('content')
@@ -199,6 +242,14 @@ class IngestView(APIView):
 class SessionListView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        summary="Get user's chat sessions",
+        description="Retrieves a list of all chat sessions for the authenticated user, ordered by creation date.",
+        responses={
+            200: SessionListResponseSerializer,
+            500: ErrorResponseSerializer,
+        },
+    )
     def get(self, request):
         start_time = time.time()
         logger.info(f"Session list request - User: {request.user.username}")
