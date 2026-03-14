@@ -12,7 +12,8 @@ from .models import ChatSession, Message
 from .serializers import (
     SignupRequestSerializer, SignupResponseSerializer,
     ChatRequestSerializer, IngestRequestSerializer, IngestResponseSerializer,
-    SessionListResponseSerializer, ErrorResponseSerializer, ThrottleErrorResponseSerializer
+    SessionListResponseSerializer, UserStatusResponseSerializer,
+    ErrorResponseSerializer, ThrottleErrorResponseSerializer
 )
 import re
 import logging
@@ -304,3 +305,47 @@ class SessionMessages(APIView):
             elapsed = time.time() - start_time
             logger.error(f"Session messages error: {str(e)} - Session: {session_id}, Time: {elapsed:.2f}s")
             return Response({"error": "Failed to retrieve messages"}, status=500)
+
+
+class UserStatusView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        summary="Get user status and statistics",
+        description="Retrieves authenticated user's profile information, admin status, and usage statistics.",
+        responses={
+            200: UserStatusResponseSerializer,
+            500: ErrorResponseSerializer,
+        },
+    )
+    def get(self, request):
+        start_time = time.time()
+        user = request.user
+        masked_email = mask_email(user.username)
+        logger.info(f"User status request - User: {masked_email}")
+        
+        try:
+            # Get user statistics
+            session_count = ChatSession.objects.filter(user=user).count()
+            message_count = Message.objects.filter(session__user=user, role="user").count()
+            
+            data = {
+                "username": user.username,
+                "full_name": user.first_name or "User",
+                "is_admin": user.is_staff or user.is_superuser,
+                "session_count": session_count,
+                "message_count": message_count,
+                "member_since": user.date_joined.strftime('%Y-%m-%d %H:%M:%S')
+            }
+            
+            elapsed = time.time() - start_time
+            logger.info(f"User status retrieved - User: {masked_email}, Sessions: {session_count}, Messages: {message_count}, Time: {elapsed:.2f}s")
+            return Response(data)
+        except Exception as e:
+            elapsed = time.time() - start_time
+            logger.error(f"User status error: {str(e)} - User: {masked_email}, Time: {elapsed:.2f}s")
+            return Response({
+                "error": True,
+                "code": "USER_STATUS_ERROR",
+                "message": "Failed to retrieve user status"
+            }, status=500)

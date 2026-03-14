@@ -7,13 +7,19 @@
 [![Pytest](https://img.shields.io/badge/Testing-Pytest-green)](https://pytest.org/)  
 [![Swagger](https://img.shields.io/badge/API-Docs-brightgreen)](#)
 
-A production-oriented **AI-powered conversational assistant** built with Django REST Framework and vanilla JavaScript.
-
-This intelligent chat system leverages **Retrieval-Augmented Generation (RAG)** technology with **pgvector** and **Gemini 2.5 Flash Lite** to provide contextual, real-time responses while maintaining conversation history and supporting document ingestion for enhanced knowledge retrieval.
-
-The project features streaming responses, comprehensive testing with **pytest**, decentralized architecture, and production-ready security configurations.
+A production-ready AI conversational backend built with Django REST Framework, implementing a complete **Retrieval-Augmented Generation (RAG)** pipeline powered by pgvector and Gemini AI. The system supports contextual chat through document retrieval, maintains conversation history, streams real-time responses, and includes features such as rate limiting, modular architecture, comprehensive pytest coverage, and production-grade security settings making it a scalable foundation for building intelligent, knowledge-aware chat applications.
 
 All endpoints can be explored and tested at: `/api/docs/` or `/api/redoc/`
+
+---
+
+## 🚀 Key Highlights
+
+- Built a **Retrieval-Augmented Generation (RAG)** AI assistant using **pgvector**
+- Implemented **streaming AI responses** with Gemini 2.5 Flash Lite
+- Designed a **service-oriented Django architecture**
+- Achieved **full API test coverage using pytest**
+- Implemented **production-grade security** (rate limiting, JWT, SSL)
 
 ---
 
@@ -28,7 +34,7 @@ It handles:
 - **Session Management**: Persistent conversation history with configurable memory window (10 messages)
 - **Comprehensive Testing**: Full pytest suite covering all functionalities
 - **Production Security**: SSL/TLS, HSTS, secure cookies, and content security policies
-- **Decentralized Architecture**: Separate settings, services, and prompts organization
+- **Modular Architecture**: Separate settings, services, and prompts organization
 - **Rate Limiting & Monitoring**: Intelligent throttling with comprehensive logging
 
 The goal was to build a scalable, intelligent chat system that reflects enterprise-grade AI application architecture with proper testing, security, and maintainability practices.
@@ -87,8 +93,8 @@ The goal was to build a scalable, intelligent chat system that reflects enterpri
 
 ---
 
-### 🏗️ Decentralized Architecture
-The project follows a sophisticated modular structure:
+### 🏗️ Modular Architecture
+The project follows a modular service-based structure:
 
 - **Settings Management**: Separate base, development, and production configurations
 - **Service Layer**: Dedicated RAG and LLM services with proper separation of concerns
@@ -320,14 +326,14 @@ pytest --cov=chat
 - **AI Integration**: Implementing streaming AI responses with proper error handling
 - **Testing Best Practices**: Comprehensive pytest suite with fixtures and mocking
 - **Security Implementation**: Production-grade security configurations and practices
-- **Architecture Design**: Decentralized, service-oriented backend architecture
+- **Architecture Design**: Service-oriented backend architecture
 - **Performance Optimization**: Efficient vector operations and database queries
 - **API Documentation**: Professional API documentation with interactive testing
 - **Frontend Integration**: Modern JavaScript with real-time streaming capabilities
 
 ---
 
-## 👨💻 About the Developer
+## 👨‍💻 About the Developer
 
 Hi! I'm **Sofi (Sofoniyas)** — a **Backend Developer** and **Software Engineering student at AASTU**, and a **graduate of the ALX Backend Engineering Program**.
 
@@ -346,15 +352,17 @@ This project showcases my growth in backend development and my ability to solve 
 
 ---
 
-### 🤳 Connect with me
+### 🤝 Connect with Me
 
-[<img align=\"left\" alt=\"LinkedIn\" width=\"22px\" src=\"https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/linkedin.svg\" />][linkedin]  
-[<img align=\"left\" alt=\"GitHub\" width=\"22px\" src=\"https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/github.svg\" />][github]  
-
-[linkedin]: https://linkedin.com/in/sofoniyas-alebachew-bb876b33b
-[github]: https://github.com/sofi391
-
-<br />
+<p align="center">
+  <a href="https://linkedin.com/in/sofoniyas-alebachew-bb876b33b">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/Sofi391">
+    <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
+  </a>
+</p>
 
 ---
 

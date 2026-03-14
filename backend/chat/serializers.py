@@ -35,6 +35,15 @@ class SessionListResponseSerializer(serializers.Serializer):
     sessions = SessionSerializer(many=True, help_text="List of user's chat sessions")
 
 
+class UserStatusResponseSerializer(serializers.Serializer):
+    username = serializers.EmailField(help_text="User's email/username")
+    full_name = serializers.CharField(help_text="User's full name")
+    is_admin = serializers.BooleanField(help_text="Whether user has admin privileges")
+    session_count = serializers.IntegerField(help_text="Total number of chat sessions")
+    message_count = serializers.IntegerField(help_text="Total number of messages sent")
+    member_since = serializers.DateTimeField(help_text="Account creation date")
+
+
 class ErrorResponseSerializer(serializers.Serializer):
     error = serializers.BooleanField(help_text="Error flag")
     code = serializers.CharField(help_text="Error code")

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Ingestion - LU AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/ingest.css">
+</head>
+<body class="ingest-page">
+    <!-- Loading Overlay (hidden by default) -->
+    <div class="loading-overlay" id="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Processing document...</div>
+    </div>
+
+    <div class="ingest-container">
+        <div class="ingest-header">
+            <button class="back-btn" id="back-to-chat">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15,18 9,12 15,6"/>
+                </svg>
+                Back to Chat
+            </button>
+            <h1 class="gradient-text">Document Ingestion</h1>
+            <p>Add content to LU's knowledge base for enhanced responses</p>
+
+            <!-- Admin badge - shows this is admin only -->
+            <div class="admin-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span>Admin Only</span>
+            </div>
+        </div>
+
+        <div class="ingest-card">
+            <div class="ingest-form">
+                <div class="form-group">
+                    <label for="content-input">
+                        Document Content
+                        <span class="label-hint">(Required)</span>
+                    </label>
+                    <textarea
+                        id="content-input"
+                        placeholder="Paste your document content here... (supports up to 100,000 characters)"
+                        rows="15"
+                        maxlength="100000"
+                    ></textarea>
+                    <div class="input-info">
+                        <span class="char-count" id="content-char-count">
+                            <span class="current">0</span> characters
+                        </span>
+                        <span class="input-hint">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 16v-4M12 8h.01"/>
+                            </svg>
+                            Supports text, articles, documentation
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="clear-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                        Clear
+                    </button>
+                    <button type="button" class="btn-primary" id="ingest-submit-btn" disabled>
+                        <span class="btn-text">Ingest Content</span>
+                        <span class="btn-loading" style="display: none;">
+                            <span class="spinner"></span>
+                            Processing...
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="ingest-status" class="status-message" style="display: none;"></div>
+        </div>
+
+        <div class="ingest-info-grid">
+            <div class="info-card">
+                <div class="info-icon">📝</div>
+                <h4>Text Processing</h4>
+                <p>Content is split into optimal chunks of ~600 characters with overlap for context preservation</p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-icon">🧠</div>
+                <h4>Embedding Generation</h4>
+                <p>Embeddings are created using Gemini's embedding model for semantic understanding</p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-icon">🗄️</div>
+                <h4>Vector Storage</h4>
+                <p>Documents are stored in pgvector database for fast similarity search</p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-icon">💬</div>
+                <h4>Enhanced Responses</h4>
+                <p>LU can now reference this content in future conversations for accurate answers</p>
+            </div>
+        </div>
+
+        <!-- Tips section -->
+        <div class="tips-section">
+            <h3>💡 Tips for best results</h3>
+            <ul>
+                <li>Include clear headings and structure in your content</li>
+                <li>Remove any irrelevant formatting or special characters</li>
+                <li>Break very large documents into smaller, focused sections</li>
+                <li>Verify the content is accurate and up-to-date</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script src="js/ingest.js"></script>
+</body>
+</html>

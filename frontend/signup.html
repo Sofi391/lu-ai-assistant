@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - LU AI</title>
+    <title>Sign Up - LU AI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -13,24 +13,35 @@
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
-                <h1>Welcome Back</h1>
-                <p>Login to continue your AI conversations</p>
+                <h1>Join LU AI</h1>
+                <p>Create your account to start chatting with AI</p>
             </div>
             
-            <form id="login-form" class="auth-form">
+            <form id="signup-form" class="auth-form">
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" placeholder="Enter your email" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <label for="full_name">Full Name (Optional)</label>
+                    <input type="text" id="full_name" name="full_name" placeholder="Enter your full name">
                 </div>
 
-                <button type="submit" class="btn-primary btn-full" id="login-btn">
-                    <span class="btn-text">Login</span>
-                    <span class="btn-loading" style="display: none;">Logging in...</span>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Min. 8 characters" required minlength="8">
+                    <small class="input-hint">Must be at least 8 characters</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter your password" required>
+                </div>
+
+                <button type="submit" class="btn-primary btn-full" id="signup-btn">
+                    <span class="btn-text">Create Account</span>
+                    <span class="btn-loading" style="display: none;">Creating...</span>
                 </button>
             </form>
 
@@ -38,7 +49,7 @@
             <div id="success-message" class="success-message" style="display: none;"></div>
 
             <div class="auth-footer">
-                <p>Don't have an account? <a href="signup.html">Sign up here</a></p>
+                <p>Already have an account? <a href="login.html">Login here</a></p>
                 <p><a href="index.html">← Back to home</a></p>
             </div>
         </div>
@@ -52,70 +63,80 @@
         }
 
         // Get form and add submit event listener
-        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
 
-        if (loginForm) {
-            loginForm.addEventListener('submit', async (e) => {
+        if (signupForm) {
+            signupForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
                 // Get form values
                 const email = document.getElementById('email').value.trim();
+                const fullName = document.getElementById('full_name').value.trim();
                 const password = document.getElementById('password').value;
-                const loginBtn = document.getElementById('login-btn');
+                const confirmPassword = document.getElementById('confirm_password').value;
+                const signupBtn = document.getElementById('signup-btn');
 
-                // Basic validation
+                // Hide any previous messages
+                hideMessages();
+
+                // Validation
                 if (!email || !password) {
-                    showError('Please fill in all fields');
+                    showError('Email and password are required');
+                    return;
+                }
+
+                if (password.length < 8) {
+                    showError('Password must be at least 8 characters');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    showError('Passwords do not match');
                     return;
                 }
 
                 // Show loading state
-                setLoading(loginBtn, true);
-                hideMessages();
+                setLoading(signupBtn, true);
 
                 try {
-                    // Prepare form data for Simple JWT
-                    const formData = new URLSearchParams();
-                    formData.append('username', email);
-                    formData.append('password', password);
-
-                    // Make API request
-                    const response = await fetch('http://localhost:8000/token/', {
+                    // Make API request to your signup endpoint
+                    const response = await fetch('http://localhost:8000/signup/', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'Content-Type': 'application/json',
                         },
-                        body: formData
+                        body: JSON.stringify({
+                            email: email,
+                            password: password,
+                            full_name: fullName
+                        })
                     });
 
                     const data = await response.json();
 
                     if (response.ok) {
-                        // Store token
-                        localStorage.setItem('lu_token', data.access);
-                        if (data.refresh) {
-                            localStorage.setItem('lu_refresh', data.refresh);
-                        }
+                        // Success response from your view: {"msg": "User created successfully"}
+                        showSuccess(data.msg || 'Account created successfully! Redirecting to login...');
 
-                        showSuccess('Login successful! Redirecting...');
-
-                        // Redirect to chat page
+                        // Redirect to login page after success
                         setTimeout(() => {
-                            window.location.href = 'chat.html';
-                        }, 500);
+                            window.location.href = 'login.html';
+                        }, 1500);
                     } else {
                         // Handle error responses
-                        if (response.status === 401) {
-                            showError('Invalid email or password');
+                        if (response.status === 400) {
+                            showError(data.error || 'User already exists or invalid data');
+                        } else if (response.status === 500) {
+                            showError(data.error || 'Server error. Please try again later');
                         } else {
-                            showError(data.detail || 'Login failed. Please try again');
+                            showError('Signup failed. Please try again');
                         }
-                        setLoading(loginBtn, false);
+                        setLoading(signupBtn, false);
                     }
                 } catch (error) {
-                    console.error('Login error:', error);
+                    console.error('Signup error:', error);
                     showError('Connection error. Please check your network');
-                    setLoading(loginBtn, false);
+                    setLoading(signupBtn, false);
                 }
             });
         }
