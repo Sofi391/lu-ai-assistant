@@ -7,6 +7,8 @@
 [![Pytest](https://img.shields.io/badge/Testing-Pytest-green)](https://pytest.org/)  
 [![Swagger](https://img.shields.io/badge/API-Docs-brightgreen)](#)
 
+> 📸 **Visual Preview** — See the full UI and API screenshots in the [Screenshots Gallery](SCREENSHOTS.md)
+
 A production-ready AI conversational backend built with Django REST Framework, implementing a complete **Retrieval-Augmented Generation (RAG)** pipeline powered by pgvector and Gemini AI. The system supports contextual chat through document retrieval, maintains conversation history, streams real-time responses, and includes features such as rate limiting, modular architecture, comprehensive pytest coverage, and production-grade security settings making it a scalable foundation for building intelligent, knowledge-aware chat applications.
 
 All endpoints can be explored and tested at: `/api/docs/` or `/api/redoc/`
