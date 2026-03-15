@@ -4,6 +4,14 @@ A visual walkthrough of the LU AI Chat Assistant — from the landing page to th
 
 ---
 
+## 🎬 Demo Video
+
+![LU AI Walkthrough](screenshots/luai.gif)
+
+A 1-minute walkthrough covering the full system. Highlights include a tour of every page, live chat with real-time streaming, the document ingestion flow, and a live demonstration of error handling — showing how the platform gracefully handles connectivity loss and server-side exceptions.
+
+---
+
 ## 🏠 Landing Page
 
 ![Home Page](screenshots/home.png)

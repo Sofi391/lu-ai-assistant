@@ -5,9 +5,14 @@
 [![Django REST Framework](https://img.shields.io/badge/DRF-REST--API-red)](https://www.django-rest-framework.org/)  
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-pgvector-blue)](https://www.postgresql.org/)  
 [![Pytest](https://img.shields.io/badge/Testing-Pytest-green)](https://pytest.org/)  
-[![Swagger](https://img.shields.io/badge/API-Docs-brightgreen)](#)
+[![Swagger](https://img.shields.io/badge/API-Docs-brightgreen)](#)  
+[![RAG](https://img.shields.io/badge/RAG-Retrieval--Augmented--Generation-8b5cf6)](#)
 
-> 📸 **Visual Preview** — See the full UI and API screenshots in the [Screenshots Gallery](SCREENSHOTS.md)
+> 📸 **Visual Preview** — See the full UI and API screenshots alongside a live demo video in the [Screenshots Gallery](SCREENSHOTS.md)
+
+> 🎬 **Live Demo** — Watch the full walkthrough on [Loom](https://www.loom.com/share/d702ffe345e7446b891f32fde2f93d34)
+
+> 🚀 **Deployment** — Coming soon
 
 A production-ready AI conversational backend built with Django REST Framework, implementing a complete **Retrieval-Augmented Generation (RAG)** pipeline powered by pgvector and Gemini AI. The system supports contextual chat through document retrieval, maintains conversation history, streams real-time responses, and includes features such as rate limiting, modular architecture, comprehensive pytest coverage, and production-grade security settings making it a scalable foundation for building intelligent, knowledge-aware chat applications.
 
